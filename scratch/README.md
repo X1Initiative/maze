@@ -1,9 +1,9 @@
 # Setup
-Make sure virtualenv is installed
-virtualenv .venv
-cp ../frameworkpython .venv/bin/
-source .venv/bin/activate
-pip install -r requirements.txt
+Make sure virtualenv is installed <br>
+virtualenv .venv <br>
+cp ../frameworkpython .venv/bin/ <br>
+source .venv/bin/activate <br>
+pip install -r requirements.txt <br>
 
 # Running
 source .venv/bin/activate
