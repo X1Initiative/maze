@@ -6,5 +6,5 @@ source .venv/bin/activate <br>
 pip install -r requirements.txt <br>
 
 # Running
-source .venv/bin/activate
+source .venv/bin/activate <br>
 frameworkpython otsu.py [picture_number]
