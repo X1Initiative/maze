@@ -24,7 +24,7 @@ def convert_to_gs(image, weighted=False):
                 grey[r][c] = average_gs(image[r][c])
     return grey
 
-PICS = ['imgs/bird.jpg', 'imgs/mazegreen.jpg']
+PICS = ['imgs/bird.jpg', 'imgs/mazegreen.jpg', 'imgs/building.jpg']
 if len(sys.argv) == 1:
     pic = PICS[0]
 elif int(sys.argv[1]) >= len(PICS):
@@ -35,7 +35,6 @@ else:
 
 matplotlib.rcParams['font.size'] = 9
 
-PICS = ['imgs/bird.jpg', 'imgs/mazegreen.jpg']
 img_orig = mpimg.imread(pic)
 img = convert_to_gs(img_orig)
 
