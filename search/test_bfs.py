@@ -1,3 +1,5 @@
+import bfs
+
 W = 1
 P = 0
 
@@ -13,7 +15,7 @@ t1 = [
 ]
 
 # Two equal distance paths
-t1 = [
+t2 = [
     [W, W, W, W, P, W, W, W],
     [W, W, W, W, P, W, W, W],
     [W, W, W, P, P, P, P, W],
@@ -23,3 +25,6 @@ t1 = [
     [W, P, P, P, P, P, P, W],
     [W, W, P, W, W, W, W, W]
 ]
+
+print bfs.bfs(t1)
+print bfs.bfs(t2)
