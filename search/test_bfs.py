@@ -26,5 +26,16 @@ t2 = [
     [W, W, P, W, W, W, W, W]
 ]
 
-print bfs.bfs(t1)
-print bfs.bfs(t2)
+t3 = [
+    [W, W, W, W, P, W, W, W],
+    [W, W, W, W, P, W, W, W],
+    [W, W, W, P, P, P, P, W],
+    [W, P, P, P, W, P, W, W],
+    [W, P, W, W, W, P, W, W],
+    [W, P, W, P, W, P, W, W],
+    [W, P, P, P, P, P, P, W],
+    [W, W, P, W, W, W, W, W]
+]
+
+soln1 = bfs.bfs(t3)
+bfs.convert_bfs_to_data(t3, soln1)
