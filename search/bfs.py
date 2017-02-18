@@ -60,7 +60,7 @@ def convert_bfs_to_data(maze, soln):
         direc = get_dir(prev[0], prev[1], coord[0], coord[1])
         prev = coord
         if prev_direc != direc:
-            with open('data_%f' % t, 'a') as f:
+            with open('data/data_%f' % t, 'a') as f:
                 if prev_direc == 'up' and direc == 'right':
                     f.write('%iR\n' % rights)
                 elif prev_direc == 'up' and direc == 'left':
