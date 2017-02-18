@@ -1,4 +1,5 @@
 from Queue import Queue
+from time import time
 
 WALL = 1
 PATH = 0
@@ -54,26 +55,28 @@ def convert_bfs_to_data(maze, soln):
     prev_direc = 'up'
     rights = 0
     lefts = 0
+    t = time()
     for coord in soln[1:]:
         direc = get_dir(prev[0], prev[1], coord[0], coord[1])
         prev = coord
         if prev_direc != direc:
-            if prev_direc == 'up' and direc == 'right':
-                print '%iR' % rights
-            elif prev_direc == 'up' and direc == 'left':
-                print '%iL' % lefts
-            elif prev_direc == 'down' and direc == 'right':
-                print '%iL' % lefts
-            elif prev_direc == 'up' and direc == 'left':
-                print '%iR' % rights
-            elif prev_direc == 'left' and direc == 'up':
-                print '%iR' % rights
-            elif prev_direc == 'left' and direc == 'down':
-                print '%iL' % lefts
-            elif prev_direc == 'right' and direc == 'up':
-                print '%iL' % lefts
-            elif prev_direc == 'right' and direc == 'down':
-                print '%iR' % rights
+            with open('data_%f' % t, 'a') as f:
+                if prev_direc == 'up' and direc == 'right':
+                    f.write('%iR\n' % rights)
+                elif prev_direc == 'up' and direc == 'left':
+                    f.write('%iL\n' % lefts)
+                elif prev_direc == 'down' and direc == 'right':
+                    f.write('%iL\n' % lefts)
+                elif prev_direc == 'up' and direc == 'left':
+                    f.write('%iR\n' % rights)
+                elif prev_direc == 'left' and direc == 'up':
+                    f.write('%iR\n' % rights)
+                elif prev_direc == 'left' and direc == 'down':
+                    f.write('%iL\n' % lefts)
+                elif prev_direc == 'right' and direc == 'up':
+                    f.write('%iL\n' % lefts)
+                elif prev_direc == 'right' and direc == 'down':
+                    f.write('%iR\n' % rights)
             rights = 0
             lefts = 0
             prev_direc = direc
