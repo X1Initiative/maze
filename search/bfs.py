@@ -1,5 +1,6 @@
 from Queue import Queue
 from time import time
+import copy
 
 WALL = 1
 PATH = 0
@@ -10,12 +11,14 @@ def bfs(maze):
     x_f, y_f = find_point(maze, 'exit')
     q = Queue()
     q.put([(x_0, y_0)])
+    maze_tmp = copy.deepcopy(maze)
     while not q.empty():
         pth = q.get()
         x, y = pth[-1]
+        maze_tmp[y][x] = WALL
         if x == x_f and y == y_f:
             return pth
-        load_queue(maze, pth, q)
+        load_queue(maze_tmp, pth, q)
 
 
 def find_point(maze, tpe):
@@ -67,7 +70,7 @@ def convert_bfs_to_data(maze, soln):
                     f.write('%iL\n' % lefts)
                 elif prev_direc == 'down' and direc == 'right':
                     f.write('%iL\n' % lefts)
-                elif prev_direc == 'up' and direc == 'left':
+                elif prev_direc == 'down' and direc == 'left':
                     f.write('%iR\n' % rights)
                 elif prev_direc == 'left' and direc == 'up':
                     f.write('%iR\n' % rights)
