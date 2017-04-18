@@ -5,8 +5,14 @@ import copy
 WALL = 1
 PATH = 0
 
-# BFS, takes in 2D array w/ 1s and 0s
 def bfs(maze):
+    """BFS algorithm
+    params:
+        maze (2D int array) - represents the maze image in 1s and 0s
+    returns:
+        list of coords which represent the shortest path
+        None if no path found
+    """
     x_0, y_0 = find_point(maze, 'entry')
     x_f, y_f = find_point(maze, 'exit')
     q = Queue()
@@ -22,6 +28,14 @@ def bfs(maze):
 
 
 def find_point(maze, tpe):
+    """Find either the entry or exit point in a maze
+    params:
+        maze (2D int array) - represents the maze image in 1s and 0s
+        tpe (string) - 'entry' or 'exit'
+    returns:
+        (x, y) int coords of exit/entry point
+        None if bad input or could not find point
+    """
     if tpe == 'entry':
         y = len(maze)-1
     elif tpe == 'exit':
@@ -33,6 +47,12 @@ def find_point(maze, tpe):
             return (x, y)
 
 def load_queue(maze, pth, q):
+    """Fills the BFS queue with all possible coords
+    params:
+        maze (2D int array) - represents the maze image in 1s and 0s
+        pth (array) - contains the x,y coords from where we are moving
+        q (Queue) - the queue of all potential points to travel to next
+    """
     x, y = pth[-1]
     if x + 1 < len(maze) and maze[y][x+1] == PATH:
         q.put(pth + [(x+1, y)])
@@ -44,6 +64,14 @@ def load_queue(maze, pth, q):
         q.put(pth + [(x, y-1)])
 
 def get_dir(x0, y0, x1, y1):
+    """Get the direction in which someone is traveling given their
+        initial coords and their final coords
+    params:
+        x0, y0 (int) - initial coords
+        x1, y1 (int) - final coords
+    returns:
+        string 'left', 'right', 'up' or 'down' depending on dir
+    """
     if x0 - x1 == 1 and y0 - y1 == 0:
         return 'left'
     if x0 - x1 == -1 and y0 - y1 == 0:
@@ -54,6 +82,25 @@ def get_dir(x0, y0, x1, y1):
         return 'down'
 
 def convert_bfs_to_data(maze, soln):
+    """Given a solution to a maze and the maze itself, writes
+        the solution to a file in the desired format to be
+        read later. The format which it will write to the file
+        is as follows:
+            [number of turns][direction turned]
+            [number of turns][direction turned]
+            ...
+        where each newline is a new instruction.
+        For example, if the solution to the maze is turn on your 
+        first right, then on your third left, then go straight to
+        the exit, the following will be written to the file:
+            1R
+            3L
+        The direction is in relation to what direction the vehicle
+        is traveling in
+    params:
+        maze (2D int array) - represents the maze image in 1s and 0s
+        soln (list) - list of coords which represent the path through the maze
+    """
     prev = soln[0]
     prev_direc = 'up'
     rights = 0
