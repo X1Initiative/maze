@@ -28,23 +28,23 @@ def main():
     # save the outputs to output.txt
 
     for i in range(len(pixel_value)):
-    	if pixel_value[i] == (0,0,0,255):
-	    pixel_value[i] = WALL
-        elif pixel_value[i] == (255,255,255,255):
+    	if pixel_value[i] == (255,255,255,255):
 	    pixel_value[i] = PATH
+        elif pixel_value[i] == (0,0,0,255):
+	    pixel_value[i] = WALL
         else:
-            pixel_value[i] = PATH
+            pixel_value[i] = WALL
 
     width, height = Image.open(open('bw_maze_mod.png')).size
     mazesize = width*height
 
     # create to a 2d array from original 1d list
     # 2d array based on (width x height) size
-    listed = np.array(pixel_value).reshape(width, height)
+    listed = np.array(pixel_value).reshape(height, width)
 
     print "original width and height of maze"
-    print "width of maze: {}".format(width)
     print "height of maze: {}".format(height)
+    print "width of maze: {}".format(width)
     print "total number of pixels: {}".format(mazesize)
 
     # scale down the number of 0s and 1s to a single value (roughly 30:1 ratio but optimize it)
