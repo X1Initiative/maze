@@ -14,7 +14,8 @@ WALL = 1
 PATH = 0
 
 ERROR_MARGIN = 0.2
-WIDTH_MARGIN = 0.85
+WIDTH_MARGIN = 1
+IMG_PATH = 'bigmaze.png'
 
 def get_starting_coords(maze):
     """Gets the top left and top right coords of the exit point at the top of the maze.
@@ -41,7 +42,7 @@ def condense(maze, margin=WIDTH_MARGIN):
         maze - the maze grid of 1s and 0s
         margin - float which controls how much to condense the maze
     returns:
-        condensed version of the maze
+        condensed version of the maze 
     """
     x0,y0,x1,y1 = get_starting_coords(maze)
     width = x1-x0
@@ -54,19 +55,19 @@ def condense(maze, margin=WIDTH_MARGIN):
     last = False
     arr = []
     i = 0
-    while y1 < maze.shape[0]:
+    while y1 <= maze.shape[0]:
         arr.append([])
-        while x1 < maze.shape[1]:
-            m = np.mean(maze[y0:y1+1,x0:x1+1])
+        while x1 <= maze.shape[1]:
+            m = np.mean(maze[y0:y1,x0:x1])
             if m < 0.5:
                 arr[i].append(0)
             else:
                 arr[i].append(1)
-            x0 += width+1
-            x1 += width+1
+            x0 += width
+            x1 += width
         i += 1
-        y0 += width+1
-        y1 += width+1
+        y0 += width
+        y1 += width
         x0 = 0
         x1 = width
     # pprint.pprint(arr)
@@ -77,7 +78,7 @@ main function
 """
 def main():
     # open (cropped out) maze image that starts with the black border line
-    img = Image.open('bw_maze_mod.png','r')
+    img = Image.open(IMG_PATH,'r')
 
     pixel_value = list(img.getdata()) # pixel_value is a list that contains all the pixel values
     # (0,0,0,255) as black and (255,255,255,255) as white
@@ -95,7 +96,7 @@ def main():
         else:
             pixel_value[i] = WALL
 
-    width, height = Image.open(open('bw_maze_mod.png')).size
+    width, height = Image.open(open(IMG_PATH)).size
     mazesize = width*height
 
     # create to a 2d array from original 1d list
