@@ -3,19 +3,79 @@ import os,sys
 import subprocess
 import glob
 import numpy as np
-np.set_printoptions(threshold=np.inf)
+import pprint
+
 from os import path
 from PIL import Image
 
+np.set_printoptions(threshold=np.inf)
+
 WALL = 1
 PATH = 0
+
+ERROR_MARGIN = 0.2
+WIDTH_MARGIN = 0.85
+
+def get_starting_coords(maze):
+    """Gets the top left and top right coords of the exit point at the top of the maze.
+        Uset to calculate the width.
+    """
+    cols = maze.shape[1]
+    x0 = None
+    x1 = None
+    for i in xrange(cols):
+        if maze[0][i] == PATH:
+            if x0 == None:
+                x0 = i
+        elif x0 is not None:
+            x1 = i
+            return x0, 0, x1, 0
+    return 0, 0, 0, 0
+
+def condense(maze, margin=WIDTH_MARGIN):
+    """Condenses the maze into a smaller maze. Scans the maze in squares of size
+        width*margin by width*margin. If most of the elements of the square are
+        path spaces, then all the squares will be condensed into one path.
+        Likewise for if they are mostly wall elements.
+    params:
+        maze - the maze grid of 1s and 0s
+        margin - float which controls how much to condense the maze
+    returns:
+        condensed version of the maze
+    """
+    x0,y0,x1,y1 = get_starting_coords(maze)
+    width = x1-x0
+    width = int(width*margin)
+    buff = int(width*ERROR_MARGIN)
+    x0 = 0
+    y0 = 0
+    x1 = width
+    y1 = width
+    last = False
+    arr = []
+    i = 0
+    while y1 < maze.shape[0]:
+        arr.append([])
+        while x1 < maze.shape[1]:
+            m = np.mean(maze[y0:y1+1,x0:x1+1])
+            if m < 0.5:
+                arr[i].append(0)
+            else:
+                arr[i].append(1)
+            x0 += width+1
+            x1 += width+1
+        i += 1
+        y0 += width+1
+        y1 += width+1
+        x0 = 0
+        x1 = width
+    # pprint.pprint(arr)
+    return arr
 
 """
 main function
 """
 def main():
-    f = open('output.txt','w')
-
     # open (cropped out) maze image that starts with the black border line
     img = Image.open('bw_maze_mod.png','r')
 
@@ -28,10 +88,10 @@ def main():
     # save the outputs to output.txt
 
     for i in range(len(pixel_value)):
-    	if pixel_value[i] == (255,255,255,255):
-	    pixel_value[i] = PATH
+        if pixel_value[i] == (255,255,255,255):
+            pixel_value[i] = PATH
         elif pixel_value[i] == (0,0,0,255):
-	    pixel_value[i] = WALL
+            pixel_value[i] = WALL
         else:
             pixel_value[i] = WALL
 
@@ -58,16 +118,19 @@ def main():
     Same goes for 0, every sequence of 30 0s will be replaced as one 0 and any sequence less than 
     30 0s will also be replaced as one 0.
     """
+    simplified_maze = condense(listed)
     
-    numrows = len(listed)
-    numcols = len(listed[0])
+    numrows = len(simplified_maze)
+    numcols = len(simplified_maze[0])
     print "number of 1s: {}".format(oneCount)
     print "number of 0s: {}".format(zeroCount)
     print "updated width and height of maze"
     print "width of maze: {}".format(numrows)
     print "height of maze: {}".format(numcols)
-    print >> f, listed
-    f.close()
+    with open('output.txt','w') as f:
+        for row in simplified_maze:
+            f.write(str(row))
+            f.write('\n')
 
 if __name__ == "__main__":
     main()
