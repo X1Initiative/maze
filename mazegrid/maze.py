@@ -13,7 +13,7 @@ np.set_printoptions(threshold=np.inf)
 WALL = 1
 PATH = 0
 
-ERROR_MARGIN = 0.2
+ERROR_MARGIN = 0.1
 WIDTH_MARGIN = 1
 IMG_PATH = 'bigmaze.png'
 
@@ -73,65 +73,69 @@ def condense(maze, margin=WIDTH_MARGIN):
     # pprint.pprint(arr)
     return arr
 
-"""
-main function
-"""
+
+
+'''The next two functions go together with the new attempt at simplifying the maze
+by extending the number of ones
+'''
+def condense_loop(maze, width, buff, x_lim, y_lim):
+    checking = False
+    for y in xrange(0, y_lim):
+        for x in xrange(0, x_lim):
+            if checking:
+                if maze[y][x] == WALL:
+                    t_width = x - start
+                    # if t_width >= width - buff and t_width <= width + buff:
+                    if t_width > 1 and t_width <= width + buff:
+                        for i in xrange(start, x-2):
+                            maze[y][i] = WALL
+                    else:
+                        checking = False
+            else:
+                if maze[y][x] == PATH:
+                    checking = True
+                    start = x
+    checking = False
+    for x in xrange(0, x_lim):
+        for y in xrange(0, y_lim):
+            if checking:
+                if maze[y][x] == WALL:
+                    t_width = y - start
+                    if t_width >= width - buff and t_width <= width + buff:
+                        for i in xrange(start+1, y+1):
+                            maze[i][x] = WALL
+                    else:
+                        checking = False
+            else:
+                if maze[y][x] == PATH:
+                    checking = True
+                    start = y
+    return maze
+
+
+def condense_with_ones(maze, margin=WIDTH_MARGIN, error_margin=ERROR_MARGIN):
+    x0,y0,x1,y1 = get_starting_coords(maze)
+    width = x1-x0
+    width = int(width*margin)
+    buff = int(width*error_margin)
+    x_lim = maze.shape[1]
+    y_lim = maze.shape[0]
+    maze = maze.tolist()
+    maze = condense_loop(maze, width, buff, x_lim, y_lim)
+    maze = condense_loop(maze, width, buff, x_lim, y_lim)
+    maze = condense_loop(maze, width, buff, x_lim, y_lim)
+    return maze
+
 def main():
-    # open (cropped out) maze image that starts with the black border line
-    img = Image.open(IMG_PATH,'r')
-
-    pixel_value = list(img.getdata()) # pixel_value is a list that contains all the pixel values
-    # (0,0,0,255) as black and (255,255,255,255) as white
-    # while for some values are not dead on (0,0,0,255) or (255,255,255,255), any value that is
-    # not (0,0,0,255) will be considered as black(WALL)
-
-    # set newline each width and convert black(wall) to 1 and white(path) to 0
-    # save the outputs to output.txt
-
-    for i in range(len(pixel_value)):
-        if pixel_value[i] == (255,255,255,255):
-            pixel_value[i] = PATH
-        elif pixel_value[i] == (0,0,0,255):
-            pixel_value[i] = WALL
-        else:
-            pixel_value[i] = WALL
-
-    width, height = Image.open(open(IMG_PATH)).size
-    mazesize = width*height
-
-    # create to a 2d array from original 1d list
-    # 2d array based on (width x height) size
-    listed = np.array(pixel_value).reshape(height, width)
-
-    print "original width and height of maze"
-    print "height of maze: {}".format(height)
-    print "width of maze: {}".format(width)
-    print "total number of pixels: {}".format(mazesize)
-
-    # scale down the number of 0s and 1s to a single value (roughly 30:1 ratio but optimize it)
-    zeroCount = 0;
-    oneCount = 0;
-    
-    """
-    This is where optimization/simplification code goes
-    Basic idea is that every sequence of 30 1s will be replaced as one 1
-    Any sequence less than 30 will also be replace as one 1, but the first condition comes first
-    Same goes for 0, every sequence of 30 0s will be replaced as one 0 and any sequence less than 
-    30 0s will also be replaced as one 0.
-    """
-    simplified_maze = condense(listed)
-    
-    numrows = len(simplified_maze)
-    numcols = len(simplified_maze[0])
-    print "number of 1s: {}".format(oneCount)
-    print "number of 0s: {}".format(zeroCount)
-    print "updated width and height of maze"
-    print "width of maze: {}".format(numrows)
-    print "height of maze: {}".format(numcols)
+    if len(sys.argv) > 1:
+        pth = sys.argv[1]
+    else:
+        pth = IMG_PATH
+    simplified_maze = create_simplified_maze(pth)
     with open('output.txt','w') as f:
         for row in simplified_maze:
             f.write(str(row))
             f.write('\n')
 
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
