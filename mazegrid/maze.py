@@ -113,6 +113,11 @@ def condense_loop(maze, width, buff, x_lim, y_lim):
 
 
 def condense_with_ones(maze, margin=WIDTH_MARGIN, error_margin=ERROR_MARGIN):
+    """Simplification algorithm. Aims to simplify the maze by making the path
+    of the maze image have width 1 (i.e. only one pixel or element of the array).
+    Does this by doing vertical and horizontal sweeps which detect paths and 
+    replace all width-wise path pixels (except one) with wall pixels.
+    """
     x0,y0,x1,y1 = get_starting_coords(maze)
     width = x1-x0
     width = int(width*margin)
