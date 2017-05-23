@@ -6,7 +6,6 @@ import numpy as np
 import pprint
 
 from os import path
-from PIL import Image
 
 np.set_printoptions(threshold=np.inf)
 

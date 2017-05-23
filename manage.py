@@ -32,7 +32,7 @@ def main():
 
     # convert the tuple list to a list of directions, to be included in a new file
     # written in the data/ directory
-    # bfs.convert_bfs_to_data(mze, soln)
+    bfs.convert_bfs_to_data(mze, soln)
 
 if __name__ == '__main__':
      main()
