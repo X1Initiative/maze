@@ -124,17 +124,3 @@ def condense_with_ones(maze, margin=WIDTH_MARGIN, error_margin=ERROR_MARGIN):
     maze = condense_loop(maze, width, buff, x_lim, y_lim)
     maze = condense_loop(maze, width, buff, x_lim, y_lim)
     return maze
-
-def main():
-    if len(sys.argv) > 1:
-        pth = sys.argv[1]
-    else:
-        pth = IMG_PATH
-    simplified_maze = create_simplified_maze(pth)
-    with open('output.txt','w') as f:
-        for row in simplified_maze:
-            f.write(str(row))
-            f.write('\n')
-
-if __name__ == '__main__':
-    main()
