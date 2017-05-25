@@ -24,6 +24,7 @@ def main():
 
     # simplify the array and print the output
     mze = maze.condense_with_ones(mze, 1, buff)
+    # return
     print_maze(mze)
 
     # get the bfs solution. This should come as a list of tuples, or None if no solution found

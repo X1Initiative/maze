@@ -7,6 +7,13 @@ import pprint
 
 from os import path
 
+def print_maze(mze):
+    for i in xrange(len(mze)):
+        for j in xrange(len(mze[i])):
+            sys.stdout.write(str(mze[i][j]))
+        sys.stdout.write('\n')
+    print '\n\n\n\n\n\n\n\n\n\n'
+
 np.set_printoptions(threshold=np.inf)
 
 WALL = 1
@@ -73,6 +80,27 @@ def condense(maze, margin=WIDTH_MARGIN):
     return arr
 
 
+def horizontal_path_search(maze, buff, x, y):
+    if y == 0:
+        return x
+    for i in xrange(buff):
+        if not x+i >= len(maze[y-1]) and maze[y-1][x+i] == PATH:
+            return x+i
+        if not x-i < 0 and maze[y-1][x-i] == PATH:
+            return x-i
+    return x
+
+def vertical_path_search(maze, buff, x, y):
+    if x == 0:
+        return y
+    for i in xrange(buff):
+        if not y+i >= len(maze) and maze[y+i][x-1] == PATH:
+            return y+i
+        if not y-i < 0 and maze[y-i][x-1] == PATH:
+            return y-i
+    return y
+
+
 
 '''The next two functions go together with the new attempt at simplifying the maze
 by extending the number of ones
@@ -86,23 +114,29 @@ def condense_loop(maze, width, buff, x_lim, y_lim):
                     t_width = x - start
                     # if t_width >= width - buff and t_width <= width + buff:
                     if t_width > 1 and t_width <= width + buff:
-                        for i in xrange(start, x-2):
+                        for i in xrange(start, x):
                             maze[y][i] = WALL
-                    else:
-                        checking = False
+                        x_0 = horizontal_path_search(maze, buff, x, y)
+                        maze[y][x_0] = PATH
+                    checking = False
             else:
                 if maze[y][x] == PATH:
                     checking = True
                     start = x
     checking = False
+    # print_maze(maze)
     for x in xrange(0, x_lim):
         for y in xrange(0, y_lim):
             if checking:
                 if maze[y][x] == WALL:
                     t_width = y - start
                     if t_width >= width - buff and t_width <= width + buff:
-                        for i in xrange(start+1, y+1):
+                    # if t_width > 1 and t_width <= width + buff:
+                        for i in xrange(start, y):
                             maze[i][x] = WALL
+                        y_0 = vertical_path_search(maze, buff, x, start)
+                        maze[y_0][x] = PATH
+                        checking = False
                     else:
                         checking = False
             else:
@@ -126,6 +160,10 @@ def condense_with_ones(maze, margin=WIDTH_MARGIN, error_margin=ERROR_MARGIN):
     y_lim = maze.shape[0]
     maze = maze.tolist()
     maze = condense_loop(maze, width, buff, x_lim, y_lim)
+    # print_maze(maze)
+    return maze
     maze = condense_loop(maze, width, buff, x_lim, y_lim)
+    # print_maze(maze)
     maze = condense_loop(maze, width, buff, x_lim, y_lim)
+    # print_maze(maze)
     return maze
